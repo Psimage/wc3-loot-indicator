@@ -1,0 +1,60 @@
+﻿STRING 1
+{
+Player 1
+}
+
+STRING 2
+{
+Force 1
+}
+
+STRING 3
+{
+test desc
+}
+
+STRING 4
+{
+Any
+}
+
+STRING 5
+{
+Nondescript
+}
+
+STRING 6
+{
+Unknown
+}
+
+STRING 7
+{
+no items
+}
+
+STRING 8
+{
+2 sets (1 item per set)
+}
+
+STRING 9
+{
+2 sets (2 items per set)
+}
+
+STRING 10
+{
+1 set, 2 specific items
+}
+
+STRING 11
+{
+map table (1 set, 2 items)
+}
+
+STRING 12
+{
+Player 2
+}
+

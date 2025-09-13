@@ -1,0 +1,81 @@
+Version {
+	FormatVersion 1200,
+}
+Model "Name" {
+	BlendTime 150,
+}
+Sequences 2 {
+	Anim "Stand" {
+		Interval { 100, 400 },
+	}
+	Anim "Death" {
+		Interval { 500, 800 },
+		NonLooping,
+	}
+}
+Textures 1 {
+	Bitmap {
+		Image "my-texture.dds",
+	}
+}
+Materials 1 {
+	Material {
+		FullResolution,
+		Shader "",
+		Layer {
+			FilterMode Blend,
+			Unshaded,
+			Unfogged,
+			static TextureID 0,
+		}
+	}
+}
+Geoset {
+	Vertices 4 {
+		{ 0.0, -10.0, 20.0 },
+		{ 0.0, -10.0, 0.0 },
+		{ 0.0, 10.0, 20.0 },
+		{ 0.0, 10.0, 0.0 },
+	}
+	Normals 4 {
+		{ 0.000000, 0.000000, 1.0 },
+		{ 0.000000, 0.000000, 1.0 },
+		{ 0.000000, 0.000000, 1.0 },
+		{ 0.000000, 0.000000, 1.0 },
+	}
+	TVertices 4 {
+		{ 0.0, 0.0 },
+		{ 0.0, 1.0 },
+		{ 1.0, 0.0 },
+		{ 1.0, 1.0 },
+	}
+	VertexGroup {
+		0,
+		0,
+		0,
+		0,
+	}
+	Faces 1 6 {
+		Triangles {
+			{ 0, 1, 2, 3, 2, 1 },
+		}
+	}
+	Groups 1 1 {
+		Matrices { 0 },
+	}
+	MinimumExtent { -110.022, -109.887, 90.866 },
+	MaximumExtent { 109.261, 109.396, 96.667 },
+	BoundsRadius 124.137,
+	MaterialID 0,
+	SelectionGroup 0,
+	LevelOfDetail 0,
+}
+Bone "my-boone" {
+	ObjectId 0,
+	Billboarded,
+	GeosetId 0,
+	GeosetAnimId None,
+}
+PivotPoints 1 {
+	{ 0.0, 0.0, 0.0 },
+}
