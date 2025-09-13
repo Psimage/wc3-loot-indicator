@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "workspace.library": [
+    "path/to/library/directory"
+  ],
+  "runtime.version": "Lua 5.3",
+  "json.maxItemsComputed": 30000,
+  "workspace.preloadFileSize": 2000,
+  "workspace.maxPreload": 1000,
+  "hint.enable": true,
+  "type.weakUnionCheck": true,
+  "type.weakNilCheck": true,
+  "diagnostics.disable": [
+    "lowercase-global",
+    "inject-field"
+  ]
+}

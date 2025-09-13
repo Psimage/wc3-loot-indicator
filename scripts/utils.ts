@@ -73,17 +73,17 @@ export function getFilesInDirectory(dir: string) {
     }
   });
   return files;
-};
+}
 
 function updateTSConfig(mapFolder: string) {
-  const tsconfig = loadJsonFile('tsconfig.json');
-  const plugin = tsconfig.compilerOptions.plugins[0];
+    const tsconfig = loadJsonFile('tsconfig.json');
+    const plugin = tsconfig.compilerOptions.plugins[0];
 
-  plugin.mapDir = path.resolve('maps', mapFolder).replace(/\\/g, '/');
-  plugin.entryFile = path.resolve(tsconfig.tstl.luaBundleEntry).replace(/\\/g, '/');
-  plugin.outputDir = path.resolve('dist', mapFolder).replace(/\\/g, '/');
+    plugin.mapDir = './' + path.join('maps', mapFolder).replace(/\\/g, '/');
+    plugin.entryFile = tsconfig.tstl.luaBundleEntry.replace(/\\/g, '/');
+    plugin.outputDir = './' + path.join('dist', mapFolder).replace(/\\/g, '/');
 
-  writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2));
+    writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2));
 }
 
 /**
@@ -95,7 +95,10 @@ export function compileMap(config: IProjectConfig) {
     return false;
   }
 
-  const tsLua = "./dist/tstl_output.lua";
+    logger.info("Cleaning dist directory...");
+    fs.removeSync("./dist");
+
+    const tsLua = "./dist/tstl_output.lua";
 
   if (fs.existsSync(tsLua)) {
     fs.unlinkSync(tsLua);
