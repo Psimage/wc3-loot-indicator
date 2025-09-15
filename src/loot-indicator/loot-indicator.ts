@@ -3,7 +3,10 @@ import {findMapInitialCreepsWithDrops, ItemDrop, ItemDropSet, RandomItemGroupDro
 import {ItemClass} from "./modules/item-groups";
 import {getItemById} from "./modules/items-db";
 import {METAKEY_CTRL, METAKEY_NONE} from "./modules/util";
-import {calcUnitHpBarPosition} from "./modules/unit-hp-bar-position-calculator";
+import {
+    calcUnitHpBarPosition,
+    initIsReforgedUnitModelsEnabledLocal,
+} from "./modules/unit-hp-bar-position-calculator";
 
 //For local player. Veriest per player.
 let IS_INDICATOR_ENABLED_LOCAL = false;
@@ -12,6 +15,7 @@ let IS_CTRL_BTN_HELD_LOCAL = false;
 let ACTIVE_INDICATORS = new Map<unit, UnitLootIndicator>();
 
 export function handleCreepLootIndicator() {
+    initIsReforgedUnitModelsEnabledLocal();
     IS_INDICATOR_ENABLED_LOCAL = loadFeatureState();
 
     const unitsWithDrops = findMapInitialCreepsWithDrops();
@@ -185,9 +189,13 @@ class UnitLootIndicator {
         //In 99% of cases a unit has a single set (drops 1 item) with a single group item drop (can drop any item from that group)
         const groupDrop = getSingleGroupDrop(itemDropSets);
         if (groupDrop && isTomeDrop(groupDrop)) {
-            e = Effect.create("loot-indicator\\loot-indicator-tome.mdx", 0, 0)!;
+            // e = Effect.create("loot-indicator\\loot-indicator-tome.mdx", 0, 0)!;
+            // e = Effect.create("loot-indicator\\crown\\crown-silver.mdx", 0, 0)!;
+            e = Effect.create("loot-indicator\\3d\\tome-3d-icon.mdx", 0, 0)!;
         } else {
-            e = Effect.create("loot-indicator\\loot-indicator-generic.mdx", 0, 0)!;
+            // e = Effect.create("loot-indicator\\loot-indicator-generic.mdx", 0, 0)!;
+            // e = Effect.create("loot-indicator\\crown\\crown-gold.mdx", 0, 0)!;
+            e = Effect.create("loot-indicator\\3d\\chest-3d-icon.mdx", 0, 0)!;
         }
 
         //For units with mana bar, we adjust the position of the effect model with animation

@@ -38,23 +38,24 @@ const UNITS_MODEL_HEIGHT: Record<string, UnitModelHeight> = compiletime(() => {
 }) as Record<string, UnitModelHeight>;
 
 
-let IS_REFORGED_UNIT_MODELS_ENABLED: boolean | undefined;
+//For local player only
+let IS_REFORGED_UNIT_MODELS_ENABLED_LOCAL: boolean;
 
-function isReforgedUnitModelsEnabled() {
-    //Lazy init
-    if(IS_REFORGED_UNIT_MODELS_ENABLED === undefined) {
-        //We spawn a unit known to have different Scale for SD and HD mode
-        const wb = Rectangle.getWorldBounds()!;
-        const u = Unit.create(MapPlayer.fromIndex(PLAYER_NEUTRAL_AGGRESSIVE)!, FourCC(Units.BlueDrake), wb.minX, wb.minY)!;
-        IS_REFORGED_UNIT_MODELS_ENABLED = getUnitModelScale(u) !== 1.2;
-        u.destroy();
-    }
-    return IS_REFORGED_UNIT_MODELS_ENABLED;
+export function initIsReforgedUnitModelsEnabledLocal() {
+    //We spawn a unit known to have different Scale for SD and HD mode
+    const wb = Rectangle.getWorldBounds()!;
+    const u = Unit.create(MapPlayer.fromIndex(PLAYER_NEUTRAL_AGGRESSIVE)!, FourCC(Units.BlueDrake), wb.minX, wb.minY)!;
+    IS_REFORGED_UNIT_MODELS_ENABLED_LOCAL = getUnitModelScale(u) !== 1.2;
+    u.destroy();
+}
+
+export function isReforgedUnitModelsEnabledLocal(): boolean {
+    return IS_REFORGED_UNIT_MODELS_ENABLED_LOCAL;
 }
 
 function getUnitModelHeight(unitId: number): number {
     const model = UNITS_MODEL_HEIGHT[id2FourCC(unitId)];
-    if(isReforgedUnitModelsEnabled()) {
+    if(isReforgedUnitModelsEnabledLocal()) {
         return model.hdHeight;
     } else {
         return model.sdHeight;
