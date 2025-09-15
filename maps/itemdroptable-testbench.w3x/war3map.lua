@@ -1058,66 +1058,6 @@ bj_lastDyingWidget = nil
 DestroyTrigger(GetTriggeringTrigger())
 end
 
-function Unit000035_DropItems()
-local trigWidget = nil
-local trigUnit = nil
-local itemID = 0
-local canDrop = true
-
-trigWidget = bj_lastDyingWidget
-if (trigWidget == nil) then
-trigUnit = GetTriggerUnit()
-end
-if (trigUnit ~= nil) then
-canDrop = not IsUnitHidden(trigUnit)
-if (canDrop and GetChangingUnit() ~= nil) then
-canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
-end
-end
-if (canDrop) then
-RandomDistReset()
-RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_ARTIFACT, 7), 100)
-itemID = RandomDistChoose()
-if (trigUnit ~= nil) then
-UnitDropItem(trigUnit, itemID)
-else
-WidgetDropItem(trigWidget, itemID)
-end
-end
-bj_lastDyingWidget = nil
-DestroyTrigger(GetTriggeringTrigger())
-end
-
-function Unit000036_DropItems()
-local trigWidget = nil
-local trigUnit = nil
-local itemID = 0
-local canDrop = true
-
-trigWidget = bj_lastDyingWidget
-if (trigWidget == nil) then
-trigUnit = GetTriggerUnit()
-end
-if (trigUnit ~= nil) then
-canDrop = not IsUnitHidden(trigUnit)
-if (canDrop and GetChangingUnit() ~= nil) then
-canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
-end
-end
-if (canDrop) then
-RandomDistReset()
-RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_ARTIFACT, 8), 100)
-itemID = RandomDistChoose()
-if (trigUnit ~= nil) then
-UnitDropItem(trigUnit, itemID)
-else
-WidgetDropItem(trigWidget, itemID)
-end
-end
-bj_lastDyingWidget = nil
-DestroyTrigger(GetTriggeringTrigger())
-end
-
 function Unit000037_DropItems()
 local trigWidget = nil
 local trigUnit = nil
@@ -2067,6 +2007,66 @@ bj_lastDyingWidget = nil
 DestroyTrigger(GetTriggeringTrigger())
 end
 
+function Unit000073_DropItems()
+local trigWidget = nil
+local trigUnit = nil
+local itemID = 0
+local canDrop = true
+
+trigWidget = bj_lastDyingWidget
+if (trigWidget == nil) then
+trigUnit = GetTriggerUnit()
+end
+if (trigUnit ~= nil) then
+canDrop = not IsUnitHidden(trigUnit)
+if (canDrop and GetChangingUnit() ~= nil) then
+canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
+end
+end
+if (canDrop) then
+RandomDistReset()
+RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_ARTIFACT, 8), 100)
+itemID = RandomDistChoose()
+if (trigUnit ~= nil) then
+UnitDropItem(trigUnit, itemID)
+else
+WidgetDropItem(trigWidget, itemID)
+end
+end
+bj_lastDyingWidget = nil
+DestroyTrigger(GetTriggeringTrigger())
+end
+
+function Unit000074_DropItems()
+local trigWidget = nil
+local trigUnit = nil
+local itemID = 0
+local canDrop = true
+
+trigWidget = bj_lastDyingWidget
+if (trigWidget == nil) then
+trigUnit = GetTriggerUnit()
+end
+if (trigUnit ~= nil) then
+canDrop = not IsUnitHidden(trigUnit)
+if (canDrop and GetChangingUnit() ~= nil) then
+canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
+end
+end
+if (canDrop) then
+RandomDistReset()
+RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_ARTIFACT, 7), 100)
+itemID = RandomDistChoose()
+if (trigUnit ~= nil) then
+UnitDropItem(trigUnit, itemID)
+else
+WidgetDropItem(trigWidget, itemID)
+end
+end
+bj_lastDyingWidget = nil
+DestroyTrigger(GetTriggeringTrigger())
+end
+
 function CreateUnitsForPlayer0()
 local p = Player(0)
 local u
@@ -2286,12 +2286,12 @@ u = BlzCreateUnitWithSkin(p, FourCC("nfrs"), 68.8, 577.7, 115.390, FourCC("nfrs"
 t = CreateTrigger()
 TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)
 TriggerRegisterUnitEvent(t, u, EVENT_UNIT_CHANGE_OWNER)
-TriggerAddAction(t, Unit000035_DropItems)
+TriggerAddAction(t, Unit000074_DropItems)
 u = BlzCreateUnitWithSkin(p, FourCC("nfrs"), 197.1, 578.7, 115.390, FourCC("nfrs"))
 t = CreateTrigger()
 TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)
 TriggerRegisterUnitEvent(t, u, EVENT_UNIT_CHANGE_OWNER)
-TriggerAddAction(t, Unit000036_DropItems)
+TriggerAddAction(t, Unit000073_DropItems)
 u = BlzCreateUnitWithSkin(p, FourCC("nmrl"), -832.8, 325.9, 88.890, FourCC("nmrl"))
 t = CreateTrigger()
 TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)

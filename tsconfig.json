@@ -18,9 +18,9 @@
     "plugins": [
       {
         "transform": "war3-transformer",
-        "mapDir": "./maps/itemdroptable-testbench.w3x",
+        "mapDir": "./maps/1v1_2v2_LostTemple_LV.w3x",
         "entryFile": "./src/main.ts",
-        "outputDir": "./dist/itemdroptable-testbench.w3x"
+        "outputDir": "./dist/1v1_2v2_LostTemple_LV.w3x"
       }
     ],
     "types": [

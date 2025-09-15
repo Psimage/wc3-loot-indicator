@@ -185,10 +185,18 @@ class UnitLootIndicator {
         //In 99% of cases a unit has a single set (drops 1 item) with a single group item drop (can drop any item from that group)
         const groupDrop = getSingleGroupDrop(itemDropSets);
         if (groupDrop && isTomeDrop(groupDrop)) {
-            e = Effect.create("Objects\\InventoryItems\\tomeRed\\tomeRed.mdl", 0, 0)!;
-            e.scale = 0.5
+            e = Effect.create("loot-indicator\\loot-indicator-tome.mdx", 0, 0)!;
         } else {
-            e = Effect.create("Objects\\InventoryItems\\PotofGold\\PotofGold.mdx", 0, 0)!;
+            e = Effect.create("loot-indicator\\loot-indicator-generic.mdx", 0, 0)!;
+        }
+
+        //For units with mana bar, we adjust the position of the effect model with animation
+        //We don't use Z offset for effect in the world, because that will affect "billboarding",
+        //and will lead to the effect slightly shifting relative to HP bar depending on the camera angle
+        if(unit.maxMana > 0) {
+            e.playAnimation(ANIM_TYPE_STAND)
+        } else {
+            e.playAnimation(ANIM_TYPE_WALK)
         }
 
         const indicator = new UnitLootIndicator(unit, itemDropSets, e);
