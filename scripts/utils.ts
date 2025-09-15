@@ -31,7 +31,7 @@ export function loadJsonFile(fname: string) {
 
 /**
  * Convert a Buffer to ArrayBuffer
- * @param buf
+ * @param b
  */
 export function toArrayBuffer(b: Buffer): ArrayBuffer {
   var ab = new ArrayBuffer(b.length);
@@ -43,7 +43,7 @@ export function toArrayBuffer(b: Buffer): ArrayBuffer {
 }
 
 /**
- * Convert a ArrayBuffer to Buffer
+ * Convert an ArrayBuffer to Buffer
  * @param ab
  */
 export function toBuffer(ab: ArrayBuffer) {
@@ -83,7 +83,7 @@ function updateTSConfig(mapFolder: string) {
     plugin.entryFile = tsconfig.tstl.luaBundleEntry.replace(/\\/g, '/');
     plugin.outputDir = './' + path.join('dist', mapFolder).replace(/\\/g, '/');
 
-    writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2));
+    writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2) + "\n");
 }
 
 /**
@@ -147,7 +147,7 @@ export function compileMap(config: IProjectConfig) {
  * Formatter for log messages.
  */
 const loggerFormatFunc = printf(({ level, message, timestamp }) => {
-  return `[${timestamp.replace("T", " ").split(".")[0]}] ${level}: ${message}`;
+  return `[${(timestamp as string).replace("T", " ").split(".")[0]}] ${level}: ${message}`;
 });
 
 /**

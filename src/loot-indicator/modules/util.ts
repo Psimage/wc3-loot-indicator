@@ -1,3 +1,5 @@
+import {Unit} from "w3ts";
+
 export function groupBy<T, K>(
     values: Iterable<T>,
     keyFn: (value: T) => K
@@ -21,6 +23,12 @@ export function id2FourCC(id: number): string {
     const c = (id >>> 8) & 0xff;
     const d = id & 0xff;
     return string.char(a, b, c, d);
+}
+
+//This is the initial "Art - Scaling Value" parameter value
+//Does not represent actual runtime scale (e.g., does not change when Bloodlusted/Hexed)
+export function getUnitModelScale(unit: Unit): number {
+    return unit.getField(UNIT_RF_SCALING_VALUE) as number
 }
 
 //https://lep.nrw/jassbot/doc/BlzTriggerRegisterPlayerKeyEvent

@@ -1,8 +1,9 @@
-import {Effect, MapPlayer, Trigger, Unit, File, Color, Timer} from "w3ts";
+import {Effect, MapPlayer, Trigger, Unit, File, Timer} from "w3ts";
 import {findMapInitialCreepsWithDrops, ItemDrop, ItemDropSet, RandomItemGroupDrop, UnitItemDrop} from "./modules/unit-item-drops";
 import {ItemClass} from "./modules/item-groups";
 import {getItemById} from "./modules/items-db";
 import {METAKEY_CTRL, METAKEY_NONE} from "./modules/util";
+import {calcUnitHpBarPosition} from "./modules/unit-hp-bar-position-calculator";
 
 //For local player. Veriest per player.
 let IS_INDICATOR_ENABLED_LOCAL = false;
@@ -165,6 +166,7 @@ class UnitLootIndicator {
     private isVisible: boolean;
     private printLootTrigger?: Trigger;
     private lootInfoMsg: string;
+    private updatePosTimer?: Timer;
 
     constructor(unit: Unit, itemDropSets: ItemDropSet[], indicatorEffect: Effect) {
         this.unit = unit;
@@ -183,20 +185,15 @@ class UnitLootIndicator {
         //In 99% of cases a unit has a single set (drops 1 item) with a single group item drop (can drop any item from that group)
         const groupDrop = getSingleGroupDrop(itemDropSets);
         if (groupDrop && isTomeDrop(groupDrop)) {
-            //TODO: Attached "overhead" effect interferes with "Sleep(Zzzz)" effect. (e.g. setting My effect scale also sets Sleep effect scale)
-            //TODO: Effect disappears when unit is Hexed (and probably any other skin/model change spell). But the handle is not destroyed!
-            //TODO: Effect inherits unit's tint color which can't be changed?
-            e = Effect.createAttachment("Objects\\InventoryItems\\tomeRed\\tomeRed.mdl", unit, "overhead")!;
-            // Effect inherits unit scale so we "unscale" it. This results in the same size effect on all units
-            //TODO: Scale is shared with other attached effects (e.g. Sleep (Zzzz)!)
-            e.scale = e.scale / (unit.getField(UNIT_RF_SCALING_VALUE) as number) * 0.6;
+            e = Effect.create("Objects\\InventoryItems\\tomeRed\\tomeRed.mdl", 0, 0)!;
+            e.scale = 0.5
         } else {
-            e = Effect.createAttachment("Objects\\InventoryItems\\PotofGold\\PotofGold.mdx", unit, "overhead")!;
-            e.scale = e.scale / (unit.getField(UNIT_RF_SCALING_VALUE) as number) * 0.95;
+            e = Effect.create("Objects\\InventoryItems\\PotofGold\\PotofGold.mdx", 0, 0)!;
         }
 
         const indicator = new UnitLootIndicator(unit, itemDropSets, e);
         indicator.enablePrintLootOnSelection();
+        indicator.enableFollowUnit();
         return indicator;
     }
 
@@ -204,23 +201,18 @@ class UnitLootIndicator {
         if (!this.isVisible) return;
         this.isVisible = false;
 
-        //TODO: just use scale=0 with custom, detached effect
-        //Scale does not prevent particles from being visible, and is shared with other attached effects
-        //Animation timescale also does not work
-        //So instead we skip to the end (100 seconds?) of non-looping animation
-        this.indicatorEffect.playAnimation(ANIM_TYPE_DEATH)
-        this.indicatorEffect.setTime(100.0)
+        this.indicatorEffect.scale = 0;
     }
 
     show() {
         if (this.isVisible) return;
         this.isVisible = true;
 
-        this.indicatorEffect.playAnimation(ANIM_TYPE_STAND)
-        this.indicatorEffect.setTime(0.0)
+        this.indicatorEffect.scale = this.indicatorScale;
     }
 
     destroy() {
+        this.updatePosTimer?.destroy();
         this.indicatorEffect.destroy();
         this.printLootTrigger?.destroy();
     }
@@ -235,5 +227,16 @@ class UnitLootIndicator {
                 DisplayTimedTextToPlayer(player.handle, 0, 0, 5, this.lootInfoMsg);
             }
         });
+    }
+
+    private enableFollowUnit() {
+        this.updatePosTimer = Timer.create()!;
+        this.updatePosTimer.start(0.01, true, () => {
+            //TODO: can i just pause the timer instead? Or pausing for a single player would result in desync?
+            if(!this.isVisible) return;
+
+            const hpBarPos = calcUnitHpBarPosition(this.unit);
+            this.indicatorEffect.setPosition(hpBarPos.x, hpBarPos.y, hpBarPos.z);
+        })
     }
 }
