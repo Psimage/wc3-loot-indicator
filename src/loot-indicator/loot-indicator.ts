@@ -26,7 +26,7 @@ export function handleCreepLootIndicator() {
 }
 
 function loadFeatureState(): boolean {
-    return File.read("w3cCreepLootIndicator.txt") === "on";
+    return (File.read("w3cCreepLootIndicator.txt") ?? "on") === "on";
 }
 
 function saveFeatureState(isEnabled: boolean) {
