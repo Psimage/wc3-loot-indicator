@@ -189,13 +189,9 @@ class UnitLootIndicator {
         //In 99% of cases a unit has a single set (drops 1 item) with a single group item drop (can drop any item from that group)
         const groupDrop = getSingleGroupDrop(itemDropSets);
         if (groupDrop && isTomeDrop(groupDrop)) {
-            // e = Effect.create("loot-indicator\\loot-indicator-tome.mdx", 0, 0)!;
-            // e = Effect.create("loot-indicator\\crown\\crown-silver.mdx", 0, 0)!;
-            e = Effect.create("loot-indicator\\3d\\tome-3d-icon.mdx", 0, 0)!;
+            e = Effect.create("loot-indicator\\loot-indicator-tome.mdx", 0, 0)!;
         } else {
-            // e = Effect.create("loot-indicator\\loot-indicator-generic.mdx", 0, 0)!;
-            // e = Effect.create("loot-indicator\\crown\\crown-gold.mdx", 0, 0)!;
-            e = Effect.create("loot-indicator\\3d\\chest-3d-icon.mdx", 0, 0)!;
+            e = Effect.create("loot-indicator\\loot-indicator-generic.mdx", 0, 0)!;
         }
 
         //For units with mana bar, we adjust the position of the effect model with animation

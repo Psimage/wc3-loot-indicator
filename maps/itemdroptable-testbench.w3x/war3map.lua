@@ -2007,6 +2007,36 @@ bj_lastDyingWidget = nil
 DestroyTrigger(GetTriggeringTrigger())
 end
 
+function Unit000072_DropItems()
+local trigWidget = nil
+local trigUnit = nil
+local itemID = 0
+local canDrop = true
+
+trigWidget = bj_lastDyingWidget
+if (trigWidget == nil) then
+trigUnit = GetTriggerUnit()
+end
+if (trigUnit ~= nil) then
+canDrop = not IsUnitHidden(trigUnit)
+if (canDrop and GetChangingUnit() ~= nil) then
+canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
+end
+end
+if (canDrop) then
+RandomDistReset()
+RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_POWERUP, 1), 100)
+itemID = RandomDistChoose()
+if (trigUnit ~= nil) then
+UnitDropItem(trigUnit, itemID)
+else
+WidgetDropItem(trigWidget, itemID)
+end
+end
+bj_lastDyingWidget = nil
+DestroyTrigger(GetTriggeringTrigger())
+end
+
 function Unit000073_DropItems()
 local trigWidget = nil
 local trigUnit = nil
@@ -2086,7 +2116,13 @@ SetHeroLevel(u, 10, false)
 SelectHeroSkill(u, FourCC("AOcl"))
 SelectHeroSkill(u, FourCC("AOcl"))
 SelectHeroSkill(u, FourCC("AOcl"))
-u = BlzCreateUnitWithSkin(p, FourCC("nomg"), 863.7, -850.0, 14.546, FourCC("nomg"))
+u = BlzCreateUnitWithSkin(p, FourCC("nomg"), 435.9, -1094.0, 14.550, FourCC("nomg"))
+life = GetUnitState(u, UNIT_STATE_LIFE)
+SetUnitState(u, UNIT_STATE_LIFE, 0.01 * life)
+t = CreateTrigger()
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_CHANGE_OWNER)
+TriggerAddAction(t, Unit000072_DropItems)
 u = BlzCreateUnitWithSkin(p, FourCC("Oshd"), 1092.5, -839.0, 137.710, FourCC("Oshd"))
 SetHeroLevel(u, 10, false)
 SelectHeroSkill(u, FourCC("AOhx"))
