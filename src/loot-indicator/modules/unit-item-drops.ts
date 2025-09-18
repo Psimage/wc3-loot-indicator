@@ -92,7 +92,10 @@ function findUnitAtPoint(p: Point): Unit | undefined {
     return u;
 }
 
-//TODO: filter out units with "empty" item sets (e.g. uses group drop that has 0 items in it)
+export function getAllItemIds(dropSets: ItemDropSet[]) {
+    return dropSets.flatMap(s => s.itemDrops.flatMap(d => d.getDropItemIds()));
+}
+
 export function findMapInitialCreepsWithDrops(): UnitItemDrop[] {
     const unitItemDrops: UnitItemDrop[] = [];
     for (const rawDrop of RAW_UNIT_ITEM_DROPS) {
@@ -110,6 +113,9 @@ export function findMapInitialCreepsWithDrops(): UnitItemDrop[] {
             });
             return {itemDrops};
         })
+
+        //In case some crazy mapmaker assigns an empty drop to a unit (or he's not crazy and just made a mistake)
+        if(getAllItemIds(dropSets).length === 0) continue;
 
         unitItemDrops.push({unit, dropSets});
     }

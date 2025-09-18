@@ -1,5 +1,12 @@
 import {Effect, MapPlayer, Trigger, Unit, File, Timer} from "w3ts";
-import {findMapInitialCreepsWithDrops, ItemDrop, ItemDropSet, RandomItemGroupDrop, UnitItemDrop} from "./modules/unit-item-drops";
+import {
+    findMapInitialCreepsWithDrops,
+    getAllItemIds,
+    ItemDrop,
+    ItemDropSet,
+    RandomItemGroupDrop,
+    UnitItemDrop
+} from "./modules/unit-item-drops";
 import {ItemClass} from "./modules/item-groups";
 import {getItemById} from "./modules/items-db";
 import {METAKEY_CTRL, METAKEY_NONE} from "./modules/util";
@@ -173,9 +180,7 @@ function enableLootTablePreviewUI() {
         if(player.isLocal()) {
             const indicator = ACTIVE_INDICATORS.get(Unit.fromEvent()!.handle);
             if(indicator !== undefined) {
-                const itemIds = indicator.itemDropSets
-                    .flatMap(s => s.itemDrops.flatMap(d => d.getDropItemIds()));
-                LootTableUI.INSTANCE.show(itemIds);
+                LootTableUI.INSTANCE.show(getAllItemIds(indicator.itemDropSets));
             } else {
                 LootTableUI.INSTANCE.hide();
             }
