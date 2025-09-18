@@ -1,4 +1,3 @@
-//TasSpellView
 
 Frame "SIMPLEBUTTON" "LI_ItemButton" {
     UseActiveContext,
