@@ -7,6 +7,7 @@ import {
     calcUnitHpBarPosition,
     initIsReforgedUnitModelsEnabledLocal,
 } from "./modules/unit-hp-bar-position-calculator";
+import {LootTableUI} from "./modules/loot-table-ui";
 
 //For local player. Veriest per player.
 let IS_INDICATOR_ENABLED_LOCAL = false;
@@ -23,6 +24,7 @@ export function handleCreepLootIndicator() {
 
     enableFeatureToggleChatCommand()
     enableTrackCtrlBtnHeld();
+    enableLootTablePreviewUI();
 }
 
 function loadFeatureState(): boolean {
@@ -159,6 +161,26 @@ function buildDropsInfoMsg(unit: Unit, drops: ItemDropSet[]): string {
     }
 
     return msg;
+}
+
+function enableLootTablePreviewUI() {
+    LootTableUI.init();
+
+    const t = Trigger.create();
+    t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SELECTED);
+    t.addAction(() => {
+        const player = MapPlayer.fromEvent()!;
+        if(player.isLocal()) {
+            const indicator = ACTIVE_INDICATORS.get(Unit.fromEvent()!.handle);
+            if(indicator !== undefined) {
+                const itemIds = indicator.itemDropSets
+                    .flatMap(s => s.itemDrops.flatMap(d => d.getDropItemIds()));
+                LootTableUI.INSTANCE.show(itemIds);
+            } else {
+                LootTableUI.INSTANCE.hide();
+            }
+        }
+    })
 }
 
 class UnitLootIndicator {

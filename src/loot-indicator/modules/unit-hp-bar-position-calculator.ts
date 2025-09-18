@@ -9,6 +9,7 @@ export interface UnitModelHeight {
     hdHeight: number;
 }
 
+//TODO: convert key to number FourCC as it is primarily used with number FourCC?
 const UNITS_MODEL_HEIGHT: Record<string, UnitModelHeight> = compiletime(() => {
     const fs = require("fs-extra");
     const heights = JSON.parse(fs.readFileSync("./scripts/loot-indicator/model-heights/unit-model-height-data.json", "utf8")) as Record<string, UnitModelHeight>;
