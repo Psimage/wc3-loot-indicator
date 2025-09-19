@@ -2139,6 +2139,9 @@ SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANch"))
+u = BlzCreateUnitWithSkin(p, FourCC("Emoo"), 1558.3, -1863.5, 194.400, FourCC("Emoo"))
+SetHeroLevel(u, 10, false)
+SelectHeroSkill(u, FourCC("AEsf"))
 end
 
 function CreateNeutralHostile()

@@ -8,7 +8,7 @@ import {
     UnitItemDrop
 } from "./modules/unit-item-drops";
 import {ItemClass} from "./modules/item-groups";
-import {getItemById} from "./modules/items-db";
+import {getItemById, initItemsDB} from "./modules/items-db";
 import {METAKEY_CTRL, METAKEY_NONE} from "./modules/util";
 import {
     calcUnitHpBarPosition,
@@ -23,6 +23,7 @@ let IS_CTRL_BTN_HELD_LOCAL = false;
 let ACTIVE_INDICATORS = new Map<unit, UnitLootIndicator>();
 
 export function handleCreepLootIndicator() {
+    initItemsDB();
     initIsReforgedUnitModelsEnabledLocal();
     IS_INDICATOR_ENABLED_LOCAL = loadFeatureState();
 

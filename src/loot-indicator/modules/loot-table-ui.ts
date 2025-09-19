@@ -53,9 +53,8 @@ export class LootTableUI {
 
                 const item = getItemById(itemId)!;
                 itemBtn.setIcon(item.interfaceIcon)
-                // Extended tooltip contains "References" to values instead of actual values.
-                // Example for "Gold Coins" (id - gold): "Gives <Algo,DataA1> gold to the player when used".
-                itemBtn.setTooltip(item.name, ParseTags(item.tooltipExtended)!)
+                itemBtn.setTooltip(`|cffffff00${item.name}\n|cff00ff00[${item.classification}, Level ${item.level}]`,
+                    item.extendedTooltip)
             } else {
                 itemBtn.btn.setVisible(false)
             }
