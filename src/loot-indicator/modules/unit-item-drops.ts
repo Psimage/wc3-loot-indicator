@@ -82,6 +82,9 @@ function findUnitAtPoint(p: Point): Unit | undefined {
     if (g.size != 1) {
         //size=0 can happen when player spawn is at a camp (e.g., on 4 player map, like LostTemple)
         //TODO: remove/disable print statements in production
+        // Idea: add a "-debug" command (locally persisted flag - same approach as feature flags).
+        // When enabled, print statements are enabled.
+        // When something goes wrong, we can ask for a replay file. Then replay it with "debug" flag enabled - and we can see what happened.
 
         // print(`P(${p.x}, ${p.y}) should point to 1 unit, but found ${g.size}.`)
         g.destroy()

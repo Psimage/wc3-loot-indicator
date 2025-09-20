@@ -2187,6 +2187,66 @@ bj_lastDyingWidget = nil
 DestroyTrigger(GetTriggeringTrigger())
 end
 
+function Unit000079_DropItems()
+local trigWidget = nil
+local trigUnit = nil
+local itemID = 0
+local canDrop = true
+
+trigWidget = bj_lastDyingWidget
+if (trigWidget == nil) then
+trigUnit = GetTriggerUnit()
+end
+if (trigUnit ~= nil) then
+canDrop = not IsUnitHidden(trigUnit)
+if (canDrop and GetChangingUnit() ~= nil) then
+canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
+end
+end
+if (canDrop) then
+RandomDistReset()
+RandomDistAddItem(ChooseRandomItemEx(ITEM_TYPE_POWERUP, 1), 100)
+itemID = RandomDistChoose()
+if (trigUnit ~= nil) then
+UnitDropItem(trigUnit, itemID)
+else
+WidgetDropItem(trigWidget, itemID)
+end
+end
+bj_lastDyingWidget = nil
+DestroyTrigger(GetTriggeringTrigger())
+end
+
+function Unit000080_DropItems()
+local trigWidget = nil
+local trigUnit = nil
+local itemID = 0
+local canDrop = true
+
+trigWidget = bj_lastDyingWidget
+if (trigWidget == nil) then
+trigUnit = GetTriggerUnit()
+end
+if (trigUnit ~= nil) then
+canDrop = not IsUnitHidden(trigUnit)
+if (canDrop and GetChangingUnit() ~= nil) then
+canDrop = (GetChangingUnitPrevOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE))
+end
+end
+if (canDrop) then
+RandomDistReset()
+RandomDistAddItem(FourCC("ratf"), 100)
+itemID = RandomDistChoose()
+if (trigUnit ~= nil) then
+UnitDropItem(trigUnit, itemID)
+else
+WidgetDropItem(trigWidget, itemID)
+end
+end
+bj_lastDyingWidget = nil
+DestroyTrigger(GetTriggeringTrigger())
+end
+
 function CreateUnitsForPlayer0()
 local p = Player(0)
 local u
@@ -2229,6 +2289,16 @@ SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANdr"))
 SelectHeroSkill(u, FourCC("ANch"))
+u = BlzCreateUnitWithSkin(p, FourCC("nnht"), 1370.8, -864.9, 154.800, FourCC("nnht"))
+t = CreateTrigger()
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_CHANGE_OWNER)
+TriggerAddAction(t, Unit000079_DropItems)
+u = BlzCreateUnitWithSkin(p, FourCC("nndr"), 1596.2, -862.2, 144.860, FourCC("nndr"))
+t = CreateTrigger()
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_DEATH)
+TriggerRegisterUnitEvent(t, u, EVENT_UNIT_CHANGE_OWNER)
+TriggerAddAction(t, Unit000080_DropItems)
 u = BlzCreateUnitWithSkin(p, FourCC("Emoo"), 1558.3, -1863.5, 194.400, FourCC("Emoo"))
 SetHeroLevel(u, 10, false)
 SelectHeroSkill(u, FourCC("AEsf"))
