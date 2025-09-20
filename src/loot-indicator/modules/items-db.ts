@@ -79,7 +79,6 @@ function createAllItemsDB() {
     }
 }
 
-//TODO: missing "ANY LEVEL" and "ANY CLASS" groups
 function createItemGroupsDB() {
     for (const item of ITEMS_BY_ID.values()) {
         //ChooseRandomItemEx filters out items that have `Stats - Include As Random Choice` field set to false

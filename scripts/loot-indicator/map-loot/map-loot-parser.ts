@@ -6,8 +6,14 @@ import type {RawItemDropSet, RawUnitItemDrop} from "../../../src/loot-indicator/
 export function getMapItemDrops(mapPath: string): RawUnitItemDrop[] {
     const unitsDoo = loadUnitsDoo(mapPath);
     // writeAsJson(`${mapPath}/raw-unit.json`, unitsDoo.units);
-    const unitsWithDrop = unitsDoo.units.filter(unit => unit.droppedItemSets.length > 0);
+    let unitsWithDrop = unitsDoo.units
+        .filter(unit => unit.droppedItemSets.length > 0)
     // writeAsJson(`${mapPath}/raw-unit-drops.json`, unitsWithDrop);
+
+    // filter out "ANY LEVEL" and "ANY CLASS" Random Groups (they cause issues)
+    // In real Melee map, nobody should use it
+    unitsWithDrop = unitsWithDrop.filter(unit => !unit.droppedItemSets.some(set =>
+        set.items.some(item => (item.id[1] === "Y") || (item.id[3] === "/"))));
 
     //TODO: "Use Item Table From Map" is unsupported.
     // Used by "(8)WellspringTemple..."
