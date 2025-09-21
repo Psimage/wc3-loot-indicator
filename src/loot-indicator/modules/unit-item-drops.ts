@@ -1,6 +1,6 @@
 import {Group, Point, Unit} from "w3ts";
 import {ItemGroup} from "./item-groups";
-import {getItemGroupById} from "./items-db";
+import {getItemById, getItemGroupById} from "./items-db";
 
 // Raw data from map file
 export interface RawUnitItemDrop {
@@ -105,19 +105,23 @@ export function findMapInitialCreepsWithDrops(): UnitItemDrop[] {
         const unit = findUnitAtPoint(Point.create(rawDrop.unitLocation.x, rawDrop.unitLocation.y));
         if (!unit) continue;
 
-        const dropSets: ItemDropSet[] = rawDrop.itemSets.map(itemSet => {
-            const itemDrops: ItemDrop[] = itemSet.itemTypes.map(itemOrGroupId => {
+        const dropSets: ItemDropSet[] = rawDrop.itemSets.flatMap(itemSet => {
+            const itemDrops: ItemDrop[] = itemSet.itemTypes.flatMap((itemOrGroupId) => {
                 const itemGroup = getItemGroupById(itemOrGroupId);
                 if (itemGroup !== undefined) {
-                    return new RandomItemGroupDrop(itemGroup)
+                    return [new RandomItemGroupDrop(itemGroup)]
+                } else if (getItemById(itemOrGroupId) !== undefined) {
+                    return [new SpecificItemDrop(itemOrGroupId)]
                 } else {
-                    return new SpecificItemDrop(itemOrGroupId)
+                    print(`Unknown item drop id "${itemOrGroupId}" for unit "${unit.name}" at (${unit.x}, ${unit.y}).`);
+                    return [] as ItemDrop[];
                 }
             });
-            return {itemDrops};
+            return itemDrops.length > 0 ? [{itemDrops}] : [];
         })
 
-        //In case some crazy mapmaker assigns an empty drop to a unit (or he's not crazy and just made a mistake)
+        //Skip unit, if effectively it has no drops.
+        //This could be mapmaker's mistake, blizzard changing drop tables, or we filtered it out (unknown item drop id)
         if(getAllItemIds(dropSets).length === 0) continue;
 
         unitItemDrops.push({unit, dropSets});
