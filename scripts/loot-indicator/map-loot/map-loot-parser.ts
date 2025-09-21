@@ -1,47 +1,52 @@
 import UnitsDoo from "mdx-m3-viewer-th/dist/cjs/parsers/w3x/unitsdoo/file.js";
+import Unit from "mdx-m3-viewer-th/dist/cjs/parsers/w3x/unitsdoo/unit.js";
 import War3MapW3i from "mdx-m3-viewer-th/dist/cjs/parsers/w3x/w3i/file.js";
 import * as fs from "fs-extra";
 import type {RawItemDropSet, RawUnitItemDrop} from "../../../src/loot-indicator/modules/unit-item-drops";
+import DroppedItemSet from "mdx-m3-viewer-th/dist/cjs/parsers/w3x/unitsdoo/droppeditemset";
 
 export function getMapItemDrops(mapPath: string): RawUnitItemDrop[] {
-    const unitsDoo = loadUnitsDoo(mapPath);
+    const {unitsDoo, war3MapW3i} = loadUnitsDoo(mapPath);
     // writeAsJson(`${mapPath}/raw-unit.json`, unitsDoo.units);
-    let unitsWithDrop = unitsDoo.units
-        .filter(unit => unit.droppedItemSets.length > 0)
-    // writeAsJson(`${mapPath}/raw-unit-drops.json`, unitsWithDrop);
+    let rawDrops = [] as RawUnitItemDrop[];
+    for (const unit of unitsDoo.units) {
+        let sets: DroppedItemSet[] = []
+        //Use Custom Item Table sets
+        sets.push(...unit.droppedItemSets)
+        //Use Item Table from Map sets (used in "(8)WellspringTemple..." map for a set of 2 runes)
+        if(unit.droppedItemTable >= 0) {
+            const itemTable = war3MapW3i.randomItemTables[unit.droppedItemTable];
+            if(itemTable !== undefined) {
+                sets.push(...itemTable.sets)
+            } else {
+                console.warn(`Item Table idx ${unit.droppedItemTable} is not found in map file`)
+            }
+        }
 
-    // filter out "ANY LEVEL" and "ANY CLASS" Random Groups (they cause issues)
-    // In real Melee map, nobody should use it
-    unitsWithDrop = unitsWithDrop.filter(unit => !unit.droppedItemSets.some(set =>
-        set.items.some(item => (item.id[1] === "Y") || (item.id[3] === "/"))));
+        //Filter out sets that use "ANY LEVEL" and "ANY CLASS" Random Groups (they cause issues)
+        // In real Melee map, nobody practically should use it
+        sets = sets.filter(set => !set.items.some(item => (item.id[1] === "Y") || (item.id[3] === "/")));
 
-    //TODO: "Use Item Table From Map" is unsupported.
-    // Used by "(8)WellspringTemple..."
-    const itemDropData: RawUnitItemDrop[] = unitsWithDrop.map(unit => {
-        const unitLocation = { x: unit.location[0], y: unit.location[1] }
-        const itemSets: RawItemDropSet[] = unit.droppedItemSets.map(set => {
-            return ({itemTypes: set.items.map(item => item.id)});
-        });
+        if(sets.length > 0) {
+            const itemSets = sets.map(set => {
+                return ({itemTypes: set.items.map(item => item.id)});
+            })
+            const unitLocation = { x: unit.location[0], y: unit.location[1] }
+            rawDrops.push({unitLocation, itemSets});
+        }
+    }
 
-        return {
-            unitLocation,
-            itemSets
-        };
-    });
-
-    // writeAsJson(`${mapPath}/unit-drops.json`, itemDropData);
-
-    return itemDropData;
+    return rawDrops;
 }
 
-function loadUnitsDoo(mapPath: string): UnitsDoo {
+function loadUnitsDoo(mapPath: string) {
         const war3MapW3i = new War3MapW3i();
         war3MapW3i.load(fs.readFileSync(`${mapPath}/war3map.w3i`))
         // writeAsJson(`${mapPath}/war3map.w3i.json`, war3MapW3i);
 
-        const udoo = new UnitsDoo();
-        udoo.load(fs.readFileSync(`${mapPath}/war3mapUnits.doo`), war3MapW3i.getBuildVersion())
-        return udoo;
+        const unitsDoo = new UnitsDoo();
+        unitsDoo.load(fs.readFileSync(`${mapPath}/war3mapUnits.doo`), war3MapW3i.getBuildVersion())
+        return {unitsDoo, war3MapW3i};
 }
 
 function writeAsJson(path: string, data: any) {
