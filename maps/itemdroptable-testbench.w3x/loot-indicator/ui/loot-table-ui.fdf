@@ -36,7 +36,7 @@ Frame "SIMPLEFRAME" "LI_Tooltip" {
 
         Frame "BACKDROP" "LI_Tooltip_Separator" {
             UseActiveContext,
-            BackdropBackground "replaceabletextures\teamcolor\teamcolor08"
+            BackdropBackground "replaceabletextures\teamcolor\teamcolor08",
         }
 
         Frame "TEXT" "LI_Tooltip_Description"  {
