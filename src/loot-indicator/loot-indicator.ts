@@ -18,6 +18,7 @@ import {LootTableUI} from "./modules/loot-table-ui";
 
 //For local player. Veriest per player.
 let IS_INDICATOR_ENABLED_LOCAL = false;
+let IS_PREVIEW_ENABLED_LOCAL = false;
 let IS_CTRL_BTN_HELD_LOCAL = false;
 
 let ACTIVE_INDICATORS = new Map<unit, UnitLootIndicator>();
@@ -25,22 +26,33 @@ let ACTIVE_INDICATORS = new Map<unit, UnitLootIndicator>();
 export function handleCreepLootIndicator() {
     initItemsDB();
     initIsReforgedUnitModelsEnabledLocal();
-    IS_INDICATOR_ENABLED_LOCAL = loadFeatureState();
+    IS_INDICATOR_ENABLED_LOCAL = loadIsIndicatorEnabled();
 
     const unitsWithDrops = findMapInitialCreepsWithDrops();
     createIndicators(unitsWithDrops);
 
-    enableFeatureToggleChatCommand()
+    enableIndicatorFeatureToggleChatCommand()
     enableTrackCtrlBtnHeld();
+
+    IS_PREVIEW_ENABLED_LOCAL = loadIsPreviewEnabled();
     enableLootTablePreviewUI();
+    enablePreviewFeatureToggleChatCommand()
 }
 
-function loadFeatureState(): boolean {
+function loadIsIndicatorEnabled(): boolean {
     return (File.read("w3cCreepLootIndicator.txt") ?? "on") === "on";
 }
 
-function saveFeatureState(isEnabled: boolean) {
+function saveIsIndicatorEnabled(isEnabled: boolean) {
     File.write("w3cCreepLootIndicator.txt", isEnabled ? "on" : "off");
+}
+
+function loadIsPreviewEnabled(): boolean {
+    return (File.read("w3cCreepLootPreview.txt") ?? "on") === "on";
+}
+
+function saveIsPreviewEnabled(isEnabled: boolean) {
+    File.write("w3cCreepLootPreview.txt", isEnabled ? "on" : "off");
 }
 
 function createIndicators(unitsWithDrops: UnitItemDrop[]) {
@@ -67,21 +79,40 @@ function registerUnitItemDroppedEvent(unit: Unit, action: () => void) {
     });
 }
 
-function enableFeatureToggleChatCommand() {
+function enableIndicatorFeatureToggleChatCommand() {
     const t = Trigger.create();
     for (let i = 0; i < bj_MAX_PLAYERS; i++) {
-        t.registerPlayerChatEvent(MapPlayer.fromIndex(i)!, "-loot", true);
+        t.registerPlayerChatEvent(MapPlayer.fromIndex(i)!, "-cli", true);
     }
     t.addAction(() => {
         const player = MapPlayer.fromEvent()!;
         if(player.isLocal()) {
             IS_INDICATOR_ENABLED_LOCAL = !IS_INDICATOR_ENABLED_LOCAL;
-            saveFeatureState(IS_INDICATOR_ENABLED_LOCAL);
+            saveIsIndicatorEnabled(IS_INDICATOR_ENABLED_LOCAL);
 
             ACTIVE_INDICATORS.forEach(indicator => {
                 IS_INDICATOR_ENABLED_LOCAL ? indicator.show() : indicator.hide()
             });
-            DisplayTextToPlayer(player.handle, 0, 0, `\n|cff00ff00[W3C]:|r Creeps loot indicator is now |cffffff00 ` + (IS_INDICATOR_ENABLED_LOCAL ? `ENABLED` : `DISABLED`) + `|r.`)
+            DisplayTextToPlayer(player.handle, 0, 0, `|cff00ff00[W3C]:|r Creep loot indicator is now |cffffff00 ` + (IS_INDICATOR_ENABLED_LOCAL ? `ENABLED` : `DISABLED`) + `|r.`)
+        }
+    })
+}
+
+function enablePreviewFeatureToggleChatCommand() {
+    const t = Trigger.create();
+    for (let i = 0; i < bj_MAX_PLAYERS; i++) {
+        t.registerPlayerChatEvent(MapPlayer.fromIndex(i)!, "-clp", true);
+    }
+    t.addAction(() => {
+        const player = MapPlayer.fromEvent()!;
+        if(player.isLocal()) {
+            IS_PREVIEW_ENABLED_LOCAL = !IS_PREVIEW_ENABLED_LOCAL;
+            saveIsPreviewEnabled(IS_PREVIEW_ENABLED_LOCAL);
+
+            if(!IS_PREVIEW_ENABLED_LOCAL) {
+                LootTableUI.INSTANCE.hide();
+            }
+            DisplayTextToPlayer(player.handle, 0, 0, `|cff00ff00[W3C]:|r Creep loot preview is now |cffffff00 ` + (IS_PREVIEW_ENABLED_LOCAL ? `ENABLED` : `DISABLED`) + `|r.`)
         }
     })
 }
@@ -178,7 +209,7 @@ function enableLootTablePreviewUI() {
     t.registerAnyUnitEvent(EVENT_PLAYER_UNIT_SELECTED);
     t.addAction(() => {
         const player = MapPlayer.fromEvent()!;
-        if(player.isLocal()) {
+        if(player.isLocal() && IS_PREVIEW_ENABLED_LOCAL) {
             const indicator = ACTIVE_INDICATORS.get(Unit.fromEvent()!.handle);
             if(indicator !== undefined) {
                 LootTableUI.INSTANCE.show(getAllItemIds(indicator.itemDropSets));
