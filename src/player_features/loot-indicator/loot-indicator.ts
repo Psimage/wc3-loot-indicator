@@ -23,7 +23,7 @@ let IS_CTRL_BTN_HELD_LOCAL = false;
 
 let ACTIVE_INDICATORS = new Map<unit, UnitLootIndicator>();
 
-export function handleCreepLootIndicator() {
+export function enableCreepLootIndicator() {
     initItemsDB();
     initIsReforgedUnitModelsEnabledLocal();
     IS_INDICATOR_ENABLED_LOCAL = loadIsIndicatorEnabled();
