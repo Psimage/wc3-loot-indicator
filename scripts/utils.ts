@@ -31,7 +31,7 @@ export function loadJsonFile(fname: string) {
 
 /**
  * Convert a Buffer to ArrayBuffer
- * @param buf
+ * @param b
  */
 export function toArrayBuffer(b: Buffer): ArrayBuffer {
   var ab = new ArrayBuffer(b.length);
@@ -43,7 +43,7 @@ export function toArrayBuffer(b: Buffer): ArrayBuffer {
 }
 
 /**
- * Convert a ArrayBuffer to Buffer
+ * Convert an ArrayBuffer to Buffer
  * @param ab
  */
 export function toBuffer(ab: ArrayBuffer) {
@@ -73,17 +73,17 @@ export function getFilesInDirectory(dir: string) {
     }
   });
   return files;
-};
+}
 
 function updateTSConfig(mapFolder: string) {
-  const tsconfig = loadJsonFile('tsconfig.json');
-  const plugin = tsconfig.compilerOptions.plugins[0];
+    const tsconfig = loadJsonFile('tsconfig.json');
+    const plugin = tsconfig.compilerOptions.plugins[0];
 
-  plugin.mapDir = path.resolve('maps', mapFolder).replace(/\\/g, '/');
-  plugin.entryFile = path.resolve(tsconfig.tstl.luaBundleEntry).replace(/\\/g, '/');
-  plugin.outputDir = path.resolve('dist', mapFolder).replace(/\\/g, '/');
+    plugin.mapDir = './' + path.join('maps', mapFolder).replace(/\\/g, '/');
+    plugin.entryFile = tsconfig.tstl.luaBundleEntry.replace(/\\/g, '/');
+    plugin.outputDir = './' + path.join('dist', mapFolder).replace(/\\/g, '/');
 
-  writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2));
+    writeFileSync('tsconfig.json', JSON.stringify(tsconfig, undefined, 2) + "\n");
 }
 
 /**
@@ -95,7 +95,10 @@ export function compileMap(config: IProjectConfig) {
     return false;
   }
 
-  const tsLua = "./dist/tstl_output.lua";
+    logger.info("Cleaning dist directory...");
+    fs.removeSync("./dist");
+
+    const tsLua = "./dist/tstl_output.lua";
 
   if (fs.existsSync(tsLua)) {
     fs.unlinkSync(tsLua);
@@ -144,7 +147,7 @@ export function compileMap(config: IProjectConfig) {
  * Formatter for log messages.
  */
 const loggerFormatFunc = printf(({ level, message, timestamp }) => {
-  return `[${timestamp.replace("T", " ").split(".")[0]}] ${level}: ${message}`;
+  return `[${(timestamp as string).replace("T", " ").split(".")[0]}] ${level}: ${message}`;
 });
 
 /**

@@ -1,0 +1,5 @@
+# An .aiignore file follows the same syntax as a .gitignore file.
+# .gitignore documentation: https://git-scm.com/docs/gitignore
+
+wc3-lua-api/
+maps/
