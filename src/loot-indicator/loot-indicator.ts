@@ -303,7 +303,6 @@ class UnitLootIndicator {
     private enableFollowUnit() {
         this.updatePosTimer = Timer.create()!;
         this.updatePosTimer.start(0.01, true, () => {
-            //TODO: can i just pause the timer instead? Or pausing for a single player would result in desync?
             if(!this.isVisible) return;
 
             const hpBarPos = calcUnitHpBarPosition(this.unit);

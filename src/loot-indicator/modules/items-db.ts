@@ -110,7 +110,6 @@ function createItemGroupsDB() {
             if (group === undefined) {
                 ITEM_GROUPS_BY_ID.set(groupId, new ItemGroup(groupId, iClass, iLevel, []))
             } else {
-                //TODO: sort extracted-items-data.json instead? (difference is here we sort by localized name)
                 //Sort items in a group alphabetically by name
                 //Lua's `<` operator does lexicographical comparison
                 group.items.sort((a, b) => (ITEMS_BY_ID.get(a)!.name < ITEMS_BY_ID.get(b)!.name) ? -1 : 1);

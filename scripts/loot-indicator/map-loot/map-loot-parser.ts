@@ -5,6 +5,8 @@ import * as fs from "fs-extra";
 import type {RawItemDropSet, RawUnitItemDrop} from "../../../src/loot-indicator/modules/unit-item-drops";
 import DroppedItemSet from "mdx-m3-viewer-th/dist/cjs/parsers/w3x/unitsdoo/droppeditemset";
 
+// getMapItemDrops('../../../maps/itemdroptable-testbench.w3x')
+
 export function getMapItemDrops(mapPath: string): RawUnitItemDrop[] {
     const {unitsDoo, war3MapW3i} = loadUnitsDoo(mapPath);
     // writeAsJson(`${mapPath}/raw-unit.json`, unitsDoo.units);
